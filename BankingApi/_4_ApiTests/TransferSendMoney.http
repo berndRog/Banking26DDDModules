@@ -1,0 +1,196 @@
+
+###
+# @name SendMoney transfer1
+POST {{baseUrl}}/accounts/01000000-0000-0000-0000-000000000000/transfers
+Content-Type: application/json
+
+{
+  "id": "00010000-0000-0000-0000-000000000000",
+  "debitAccountId": "01000000-0000-0000-0000-000000000000",
+  "beneficiaryId": "00100000-0000-0000-0000-000000000000",
+  "purpose": "Erika1 an Chris1",
+  "amount": 345.0,
+  "currency": 1,
+  "bookedAt": "2025-01-01T00:00:00Z",
+  "debitId": "0001d000-0000-0000-0000-000000000000",
+  "creditId": "0001c000-0000-0000-0000-000000000000"
+}
+
+###
+# @name SendMoney transfer2
+POST {{baseUrl}}/accounts/01000000-0000-0000-0000-000000000000/transfers
+Content-Type: application/json
+
+{
+  "id": "00020000-0000-0000-0000-000000000000",
+  "debitAccountId": "01000000-0000-0000-0000-000000000000",
+  "beneficiaryId": "00200000-0000-0000-0000-000000000000",
+  "purpose": "Erika1 an Chris2",
+  "amount": 231,
+  "currency": 1,
+  "bookedAt": "2025-01-15T00:00:00Z",
+  "debitId": "0002d000-0000-0000-0000-000000000000",
+  "creditId": "0002c000-0000-0000-0000-000000000000"
+}
+
+###
+# @name SendMoney transfer3
+POST {{baseUrl}}/accounts/02000000-0000-0000-0000-000000000000/transfers
+accountId: 01000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+{
+  "id": "00030000-0000-0000-0000-000000000000",
+  "debitAccountId": "02000000-0000-0000-0000-000000000000",
+  "beneficiaryId": "00300000-0000-0000-0000-000000000000",
+  "purpose": "Erika an Arne",
+  "amount": 289.0,
+  "currency": 1,
+  "bookedAt": "2025-02-01T00:00:00Z",
+  "debitId": "0003d000-0000-0000-0000-000000000000",
+  "creditId": "0003c000-0000-0000-0000-000000000000"
+}
+
+###
+# @name SendMoney transfer4
+POST {{baseUrl}}/accounts/02000000-0000-0000-0000-000000000000/transfers
+accountId: 01000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+{
+  "id": "00040000-0000-0000-0000-000000000000",
+  "debitAccountId": "02000000-0000-0000-0000-000000000000",
+  "beneficiaryId": "00400000-0000-0000-0000-000000000000",
+  "purpose": "Erika an Benno",
+  "amount": 125,
+  "currency": 1,
+  "bookedAt": "2025-02-15T00:00:00Z",
+  "debitId": "0004d000-0000-0000-0000-000000000000",
+  "creditId": "0004c000-0000-0000-0000-000000000000"
+}
+
+###
+# @name SendMoney transfer5
+POST {{baseUrl}}/accounts/03000000-0000-0000-0000-000000000000/transfers
+accountId: 01000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+{
+  "id": "00050000-0000-0000-0000-000000000000",
+  "debitAccountId": "03000000-0000-0000-0000-000000000000",
+  "beneficiaryId": "00500000-0000-0000-0000-000000000000",
+  "purpose": "Max an Arne",
+  "amount": 167,
+  "currency": 1,
+  "bookedAt": "2025-03-01T00:00:00Z",
+  "debitId": "0005d000-0000-0000-0000-000000000000",
+  "creditId": "0005c000-0000-0000-0000-000000000000"
+}
+
+###
+# @name SendMoney transfer6
+POST {{baseUrl}}/accounts/03000000-0000-0000-0000-000000000000/transfers
+accountId: 01000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+{
+  "id": "00060000-0000-0000-0000-000000000000",
+  "debitAccountId": "03000000-0000-0000-0000-000000000000",
+  "beneficiaryId": "00600000-0000-0000-0000-000000000000",
+  "purpose": "Max an Benno",
+  "amount": 289,
+  "currency": 1,
+  "bookedAt": "2025-03-15T00:00:00Z",
+  "debitId": "0006d000-0000-0000-0000-000000000000",
+  "creditId": "0006c000-0000-0000-0000-000000000000"
+}
+
+###
+# @name SendMoney transfer7
+POST {{baseUrl}}/accounts/03000000-0000-0000-0000-000000000000/transfers
+accountId: 01000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+{
+  "id": "00070000-0000-0000-0000-000000000000",
+  "debitAccountId": "03000000-0000-0000-0000-000000000000",
+  "beneficiaryId": "00700000-0000-0000-0000-000000000000",
+  "purpose": "Max an Dana",
+  "amount": 312,
+  "currency": 1,
+  "bookedAt": "2025-04-01T00:00:00Z",
+  "debitId": "0007d000-0000-0000-0000-000000000000",
+  "creditId": "0007c000-0000-0000-0000-000000000000"
+}
+
+###
+# @name SendMoney transfer8
+POST {{baseUrl}}/accounts/04000000-0000-0000-0000-000000000000/transfers
+accountId: 01000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+{
+  "id": "00080000-0000-0000-0000-000000000000",
+  "debitAccountId": "04000000-0000-0000-0000-000000000000",
+  "beneficiaryId": "00800000-0000-0000-0000-000000000000",
+  "purpose": "Arne an Max",
+  "amount": 278,
+  "currency": 1,
+  "bookedAt": "2025-04-15T00:00:00Z",
+  "debitId": "0008d000-0000-0000-0000-000000000000",
+  "creditId": "0008c000-0000-0000-0000-000000000000"
+}
+
+###
+# @name SendMoney transfer9
+POST {{baseUrl}}/accounts/04000000-0000-0000-0000-000000000000/transfers
+accountId: 01000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+{
+  "id": "00090000-0000-0000-0000-000000000000",
+  "debitAccountId": "04000000-0000-0000-0000-000000000000",
+  "beneficiaryId": "00900000-0000-0000-0000-000000000000",
+  "purpose": "Arne an Chris2",
+  "amount": 356,
+  "currency": 1,
+  "bookedAt": "2025-05-01T00:00:00Z",
+  "debitId": "0009d000-0000-0000-0000-000000000000",
+  "creditId": "0009c000-0000-0000-0000-000000000000"
+}
+
+###
+# @name SendMoney transfer10
+POST {{baseUrl}}/accounts/05000000-0000-0000-0000-000000000000/transfers
+accountId: 01000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+{
+  "id": "00100000-0000-0000-0000-000000000000",
+  "debitAccountId": "05000000-0000-0000-0000-000000000000",
+  "beneficiaryId": "01000000-0000-0000-0000-000000000000",
+  "purpose": "Benno an Erika1",
+  "amount": 412,
+  "currency": 1,
+  "bookedAt": "2025-05-15T00:00:00Z",
+  "debitId": "0010d000-0000-0000-0000-000000000000",
+  "creditId": "0010c000-0000-0000-0000-000000000000"
+}
+
+###
+# @name SendMoney transfer11
+POST {{baseUrl}}/accounts/05000000-0000-0000-0000-000000000000/transfers
+accountId: 01000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+{
+  "id": "00110000-0000-0000-0000-000000000000",
+  "debitAccountId": "05000000-0000-0000-0000-000000000000",
+  "beneficiaryId": "01100000-0000-0000-0000-000000000000",
+  "purpose": "Benno an Erika2",
+  "amount": 89,
+  "currency": 1,
+  "bookedAt": "2025-06-01T00:00:00Z",
+  "debitId": "0011d000-0000-0000-0000-000000000000",
+  "creditId": "0011c000-0000-0000-0000-000000000000"
+}
