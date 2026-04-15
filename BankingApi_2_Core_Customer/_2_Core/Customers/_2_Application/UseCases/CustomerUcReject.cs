@@ -1,6 +1,7 @@
 using BankingApi._2_Core.BuildingBlocks;
 using BankingApi._2_Core.BuildingBlocks._1_Ports.Outbound;
-using BankingApi._2_Core.BuildingBlocks._3_Domain;
+using BankingApi._2_Core.BuildingBlocks._3_Domain.Enums;
+using BankingApi._2_Core.BuildingBlocks._4_IntegrationContracts._1_Ports;
 using BankingApi._2_Core.Customers._1_Ports.Outbound;
 using BankingApi._2_Core.Customers._3_Domain.Enum;
 using BankingApi._2_Core.Customers._3_Domain.Errors;
@@ -11,7 +12,7 @@ namespace BankingApi._2_Core.Customers._2_Application.UseCases;
 /// Employee use case: reject a customer (e.g., KYC failed).
 /// </summary>
 public sealed class CustomerUcReject(
-   IIdentityGateway identityGateway,
+   IEmployeeContract employeeContract,
    ICustomerRepository repository,
    IUnitOfWork unitOfWork,
    IClock clock,
@@ -20,17 +21,20 @@ public sealed class CustomerUcReject(
 
    public async Task<Result> ExecuteAsync(
       Guid customerId,
-      RejectCode rejectCode,
+      CustomerRejectCode customerRejectCode,
       CancellationToken ct
    ) {
-      // 1) Authorization: must be an employee/admin with the required rights
-      if (identityGateway.AdminRights == 0)
-         return Result.Failure(CustomerErrors.EmployeeRightsRequired);
+      // 1) Authorization: check if caller is an employee with required rights
+      var requiredRights = AdminRights.ManageCustomers;
+      var resultEmployee = await employeeContract.GetAuthorizedEmployeeAsync(requiredRights, ct);
+      if (resultEmployee.IsFailure)
+         return Result.Failure(resultEmployee.Error);
+      var employeeContractDto = resultEmployee.Value;
 
       // 2) Validate input
       if (customerId == Guid.Empty)
          return Result.Failure(CustomerErrors.InvalidId);
-      if (rejectCode == default)
+      if (customerRejectCode == default)
          return Result.Failure(CustomerErrors.RejectionRequiresReason);
 
       // 3) Load aggregate
@@ -41,8 +45,8 @@ public sealed class CustomerUcReject(
 
       // 4) Domain change (audit + status transition)
       var rejectedAt = clock.UtcNow;
-      var employeeId = ParseEmployeeId(identityGateway.Subject);
-      var result = customer.Reject(employeeId, rejectCode, rejectedAt);
+      var employeeId = employeeContractDto.Id;
+      var result = customer.Reject(employeeId, customerRejectCode, rejectedAt);
       if (result.IsFailure)
          return Result.Failure(result.Error);
 
@@ -52,7 +56,4 @@ public sealed class CustomerUcReject(
 
       return Result.Success();
    }
-
-   private static Guid ParseEmployeeId(string subject) =>
-      Guid.TryParse(subject, out var id) ? id : Guid.Empty;
 }

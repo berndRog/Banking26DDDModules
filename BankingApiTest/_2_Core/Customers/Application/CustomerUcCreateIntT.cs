@@ -10,6 +10,12 @@ namespace BankingApiTest._2_Core.Customers.Application;
 
 public sealed class CustomerUcCreateIntT : TestBaseIntegration {
    
+   public CustomerUcCreateIntT() {
+      DbMode = DbMode.FileUnique;
+      DbName = "CustomerUcCreateIntTest";
+      SensitiveDataLogging = true;
+   }
+   
    [Fact]
    public async Task Create_Customer_ok() {
       

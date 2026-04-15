@@ -8,6 +8,12 @@ namespace BankingApiTest._2_Core.Customers.Application;
 
 public sealed class CustomerUcCreateProvisionIntT : TestBaseIntegration {
    
+   public CustomerUcCreateProvisionIntT() {
+      DbMode = DbMode.FileUnique;
+      DbName = "CustomerUcCreateProvisionIntTest";
+      SensitiveDataLogging = true;
+   }
+   
    [Fact]
    public async Task CustomerUcCreateProvison_ok() {
       

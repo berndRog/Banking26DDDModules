@@ -10,6 +10,12 @@ namespace BankingApiTest._2_Core.Customers.Application;
 
 public sealed class CustomerUcDeactivateIntT : TestBaseIntegration {
 
+   public CustomerUcDeactivateIntT() {
+      DbMode = DbMode.FileUnique;
+      DbName = "CustomerUcDeactivateIntTest";
+      SensitiveDataLogging = true;
+   }
+   
    [Fact]
    public async Task CustomerUcDeactivate_ok() {
 

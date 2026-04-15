@@ -8,34 +8,33 @@ using BankingApiTest.TestInfrastructure;
 using Microsoft.Extensions.DependencyInjection;
 namespace BankingApiTest._2_Core.Customers.Application;
 
-public sealed class CustomerUcActivateIntT : TestBaseIntegration {
+public sealed class CustomerUcRejectIntT : TestBaseIntegration {
 
-   public CustomerUcActivateIntT() {
+   public CustomerUcRejectIntT() {
       DbMode = DbMode.FileUnique;
-      DbName = "CustomerUcActivateIntTest";
+      DbName = "CustomerUcRejectIntTest";
       SensitiveDataLogging = true;
    }
    
    [Fact]
-   public async Task CustomerUcActivate_ok() {
+   public async Task CustomerUcReject_ok() {
 
       using var scope = Root.CreateDefaultScope();
       var ct = TestContext.Current.CancellationToken;
       var customerRepository = scope.ServiceProvider.GetRequiredService<ICustomerRepository>();
-      var emplyeeRepository = scope.ServiceProvider.GetRequiredService<IEmployeeRepository>();
+      var employeeRepository = scope.ServiceProvider.GetRequiredService<IEmployeeRepository>();
       var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
       var seed = scope.ServiceProvider.GetRequiredService<TestSeed>();
       var customerUcCreateProvision = scope.ServiceProvider.GetRequiredService<CustomerUcCreateProvision>();
       var customerUcUpdateProfile = scope.ServiceProvider.GetRequiredService<CustomerUcUpdateProfile>();
-      var sut = scope.ServiceProvider.GetRequiredService<CustomerUcActivate>();
-      
+      var sut = scope.ServiceProvider.GetRequiredService<CustomerUcReject>();
+
       var customer = seed.CustomerRegister();
       var customerDto = customer.ToCustomerDto();
-      var account = seed.Account1(); 
       var employee = seed.Employee2();  // Walter Wagner
 
       // Arrange
-      emplyeeRepository.Add(employee);
+      employeeRepository.Add(employee);
       
       // create provision
       var resultProvision = await customerUcCreateProvision.ExecuteAsync(customerDto, ct);
@@ -46,14 +45,12 @@ public sealed class CustomerUcActivateIntT : TestBaseIntegration {
       unitOfWork.ClearChangeTracker();
       
       // Act
-      var result = await sut.ExecuteAsync(
+      var resultReject = await sut.ExecuteAsync(
          customerId: customer.Id,
-         accountId: account.Id.ToString(),
-         iban: account.IbanVo.Value,
-         balance: account.BalanceVo.Amount,
+         customerRejectCode: CustomerRejectCode.ComplianceCheckFailed,
          ct: ct);
-      True(result.IsSuccess);
-      
+      True(resultReject.IsSuccess);   
+
       // Assert
       var actual = await customerRepository.FindByIdAsync(customer.Id, ct);
       NotNull(actual);
@@ -63,7 +60,8 @@ public sealed class CustomerUcActivateIntT : TestBaseIntegration {
       Equal(customer.CompanyName, actual.CompanyName);
       Equal(customer.EmailVo, actual.EmailVo);
       Equal(customer.Subject, actual.Subject);
-      Equal(CustomerStatus.Active, actual.Status);
+      Equal(CustomerRejectCode.ComplianceCheckFailed, actual.CustomerRejectCode);
+      Equal(CustomerStatus.Rejected, actual.Status);
       Equal(customer.AddressVo, actual.AddressVo);
    }
 }

@@ -10,20 +10,24 @@ namespace BankingApiTest._2_Core.Customers.Application;
 
 public sealed class CustomerUcUpdateProfileIntT : TestBaseIntegration {
 
-   private TestSeed _seed = new();
-
+   public CustomerUcUpdateProfileIntT() {
+      DbMode = DbMode.FileUnique;
+      DbName = "CustomerUcUpdateProfileIntTest";
+      SensitiveDataLogging = true;
+   }
+   
    [Fact]
    public async Task UpdateProfile_ok() {
       using var scope = Root.CreateDefaultScope();
       var ct = TestContext.Current.CancellationToken;
       var customerRepository = scope.ServiceProvider.GetRequiredService<ICustomerRepository>();
       var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-      var identity = scope.ServiceProvider.GetRequiredService<IIdentityGateway>();
+      var seed = scope.ServiceProvider.GetRequiredService<TestSeed>();
       var customerUcCreateProvision = scope.ServiceProvider.GetRequiredService<CustomerUcCreateProvision>();
       var sut = scope.ServiceProvider.GetRequiredService<CustomerUcUpdateProfile>();
 
       // Arrange
-      var customer = _seed.CustomerRegister();
+      var customer = seed.CustomerRegister();
       var customerDto = customer.ToCustomerDto();
       // create provision
       var result = await customerUcCreateProvision.ExecuteAsync(customerDto, ct);

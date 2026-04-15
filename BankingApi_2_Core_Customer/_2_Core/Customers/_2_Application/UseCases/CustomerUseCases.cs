@@ -51,9 +51,9 @@ internal class CustomerUseCases(
 
    public Task<Result> RejectAsync(
       Guid customerId, 
-      RejectCode rejectCode,
+      CustomerRejectCode customerRejectCode,
       CancellationToken ct
-   ) => rejectUc.ExecuteAsync(customerId, rejectCode, ct);
+   ) => rejectUc.ExecuteAsync(customerId, customerRejectCode, ct);
    
    public Task<Result> DeactivateAsync(
       Guid customerId,

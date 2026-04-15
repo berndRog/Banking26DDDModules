@@ -66,6 +66,8 @@ public static class DiTestModules {
       services.AddScoped<CustomerUcUpdateProfile>();
       services.AddScoped<CustomerUcActivate>();
       services.AddScoped<CustomerUcDeactivate>();
+      services.AddScoped<CustomerUcUpdate>();
+      services.AddScoped<CustomerUcReject>();
       
       // Account UseCases
       services.AddScoped<IAccountUseCases, AccountUseCases>();

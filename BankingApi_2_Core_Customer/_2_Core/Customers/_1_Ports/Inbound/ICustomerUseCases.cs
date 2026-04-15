@@ -42,7 +42,7 @@ public interface ICustomerUseCases {
    // Employee action: reject a customer registration
    Task<Result> RejectAsync(
       Guid customerId,
-      RejectCode rejectCode,
+      CustomerRejectCode customerRejectCode,
       CancellationToken ct = default
    );
 
@@ -51,7 +51,6 @@ public interface ICustomerUseCases {
       Guid customerId,
       CancellationToken ct = default
    );
-   
    
    // Change the customer's profile data
    Task<Result> UpdateAsync(
