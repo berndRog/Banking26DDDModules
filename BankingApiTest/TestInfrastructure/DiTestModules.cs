@@ -4,7 +4,9 @@ using BankingApi._2_Core.BuildingBlocks._4_IntegrationContracts._1_Ports;
 using BankingApi._2_Core.Customers._1_Ports.Inbound;
 using BankingApi._2_Core.Customers._1_Ports.Outbound;
 using BankingApi._2_Core.Customers._2_Application.UseCases;
+using BankingApi._2_Core.Employees._1_Ports.Inbound;
 using BankingApi._2_Core.Employees._1_Ports.Outbound;
+using BankingApi._2_Core.Employees._2_Application.UseCases;
 using BankingApi._2_Core.Payments._1_Ports.Inbound;
 using BankingApi._2_Core.Payments._1_Ports.Outbound;
 using BankingApi._2_Core.Payments._2_Application.UseCases;
@@ -72,6 +74,7 @@ public static class DiTestModules {
       // Account UseCases
       services.AddScoped<IAccountUseCases, AccountUseCases>();
       services.AddScoped<AccountUcCreate>();
+      services.AddScoped<AccountUcDeactivate>();
       services.AddScoped<AccountUcBeneficiaryAdd>();
       services.AddScoped<AccountUcBeneficiaryRemove>();
       
@@ -79,6 +82,16 @@ public static class DiTestModules {
       services.AddScoped<ITransferUseCases, TransferUseCases>();
       services.AddScoped<TransferUcSendMoney>();
 //      services.AddScoped<TransferUcReverse>();
+
+      // Employee UseCases
+      services.AddScoped<IEmployeeUseCases, EmployeeUseCases>();
+      services.AddScoped<EmployeeUcCreate>();
+      services.AddScoped<EmployeeUcCreateProvision>();
+      services.AddScoped<EmployeeUcUpdateProfile>();
+      //services.AddScoped<EmployeeUcActivate>();
+      services.AddScoped<EmployeeUcDeactivate>();
+      //services.AddScoped<EmployeeUcUpdate>();
+      //services.AddScoped<EmployeeUcReject>();
       
       // Unit of Work
       services.AddScoped<IUnitOfWork, UnitOfWork>();

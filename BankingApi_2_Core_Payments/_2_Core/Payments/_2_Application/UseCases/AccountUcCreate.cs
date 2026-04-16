@@ -37,7 +37,7 @@ public sealed class AccountUcCreate(
          return Result<AccountDto>.Failure(resultEmployee.Error);
       var employeeContractDto = resultEmployee.Value;
       
-      // 3) domain model  
+      // 3) Domain model  
       var resultIbanVo = IbanVo.Create(accountDto.Iban);
       if (resultIbanVo.IsFailure)
          return Result<AccountDto>.Failure(resultIbanVo.Error);
@@ -48,7 +48,7 @@ public sealed class AccountUcCreate(
          return Result<AccountDto>.Failure(resultBalanceVo.Error);
       var balanceVo = resultBalanceVo.Value;
       
-      // create entity
+      // Create entity
       var result = Account.Create(
          ibanVo: ibanVo, 
          balanceVo: balanceVo, 
@@ -63,10 +63,10 @@ public sealed class AccountUcCreate(
                new { accountDto });
       var account = result.Value;
       
-      // 4) add to repository
+      // 4) Add to repository
       accountRepository.Add(account);            
          
-      // 5) unit of work, save changes to database
+      // 5) Unit of work, save changes to database
       var rows = await unitOfWork.SaveAllChangesAsync("Add account", ct);
       
       logger.LogInformation("AccountUcCreate={id} rows={rows}", account.Id, rows);

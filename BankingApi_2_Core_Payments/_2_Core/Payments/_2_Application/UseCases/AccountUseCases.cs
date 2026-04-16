@@ -1,9 +1,11 @@
+using System.Runtime.CompilerServices;
 using BankingApi._2_Core.BuildingBlocks;
 using BankingApi._2_Core.Payments._1_Ports.Inbound;
 using BankingApi._2_Core.Payments._2_Application.Dtos;
+[assembly: InternalsVisibleTo("BankingApiTest")]
 namespace BankingApi._2_Core.Payments._2_Application.UseCases;
 
-public class AccountUseCases(
+internal class AccountUseCases(
    AccountUcCreate accountUcCreate,
    AccountUcDeactivate accountUcDeactivate,
    AccountUcBeneficiaryAdd accountUcBeneficiaryAdd,

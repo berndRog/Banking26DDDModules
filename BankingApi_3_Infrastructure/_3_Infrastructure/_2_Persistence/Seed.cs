@@ -15,6 +15,7 @@ public sealed class Seed(
    #region --------------- Test Employees (Entities) -----------------------------------------
    private const string Employee1Id = "00000000-0001-0000-0000-000000000000";
    private const string Employee2Id = "00000000-0002-0000-0000-000000000000";
+   private const string EmployeeRegisterId = "00000000-0010-0000-0000-000000000000";
 
    public Employee Employee1() => CreateEmployee(
       id: Employee1Id,
@@ -36,6 +37,17 @@ public sealed class Seed(
       phone: "+49 5826 123 4020",
       subject: "11111111-0002-0000-0000-000000000000",
       personnelNumber: "Emp002",
+      adminRights: (AdminRights) 511
+   );
+   
+   public Employee EmployeeRegister() => CreateEmployee(
+      id: EmployeeRegisterId,
+      firstname: "Yvonne",
+      lastname: "Yahn",
+      email: "y.yahn@banking.de",
+      phone: "+49 5826 123 4020",
+      subject: "11111111-0010-0000-0000-000000000000",
+      personnelNumber: "Emp010",
       adminRights: (AdminRights) 511
    );
 
@@ -75,7 +87,7 @@ public sealed class Seed(
    private const string Customer5Id = "50000000-0000-0000-0000-000000000000";
    private const string Customer6Id = "60000000-0000-0000-0000-000000000000";
 
-   private const string _customerRegister = "70000000-0000-0000-0000-000000000000";
+   private const string CustomerRegisterId = "70000000-0000-0000-0000-000000000000";
 
    public Customer Customer1() => CreateCustomer(
       id: Customer1Id,
@@ -144,7 +156,7 @@ public sealed class Seed(
    );
 
    public Customer CustomerRegister() => CreateCustomer(
-      id: _customerRegister,
+      id: CustomerRegisterId,
       firstname: "Edgar",
       lastname: "Engel",
       companyName: null,

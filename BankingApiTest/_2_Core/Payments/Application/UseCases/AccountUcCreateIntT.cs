@@ -11,11 +11,16 @@ namespace BankingApiTest._2_Core.Core.Application.UseCases;
 
 public sealed class AccountUcCreateIntT : TestBaseIntegration {
    
+   public AccountUcCreateIntT() {
+      DbMode = DbMode.FileUnique;
+      DbName = "AccountUcCreateIntTest";
+      SensitiveDataLogging = true;
+   }
+   
    [Fact]
    public async Task Create_account_ok() {
       using var scope = Root.CreateDefaultScope();
       var ct = CancellationToken.None;
-      var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
       var customerRepository = scope.ServiceProvider.GetRequiredService<ICustomerRepository>();
       var employeeRepository = scope.ServiceProvider.GetRequiredService<IEmployeeRepository>();
       var accountRepository = scope.ServiceProvider.GetRequiredService<IAccountRepository>();
@@ -30,7 +35,7 @@ public sealed class AccountUcCreateIntT : TestBaseIntegration {
       employeeRepository.Add(employee2);
       await unitOfWork.SaveAllChangesAsync("Employee2 must exist", ct);
       unitOfWork.ClearChangeTracker();
-      
+      // Customer 1 is the owner of Account1
       var customer = seed.Customer1();
       customerRepository.Add(customer);
       await unitOfWork.SaveAllChangesAsync("Seeding data", ct);
@@ -40,11 +45,12 @@ public sealed class AccountUcCreateIntT : TestBaseIntegration {
       var accountDto = account.ToAccountDto();
       
       // Act
-      var result = await sut.ExecuteAsync(
+      var resultAccountCreate = await sut.ExecuteAsync(
          customerId: customer.Id,
          accountDto: accountDto,
          ct: ct
       );
+      True(resultAccountCreate.IsSuccess);
       unitOfWork.ClearChangeTracker();
       
       // Assert
@@ -53,6 +59,8 @@ public sealed class AccountUcCreateIntT : TestBaseIntegration {
       Equal(account.Id, actual!.Id);
       Equal(account.IbanVo, actual.IbanVo);
       Equal(account.BalanceVo, actual.BalanceVo);
+      Equal(employee2.Id, actual.CreatedByEmployeeId);
+      Equal(null, actual.DeactivatedByEmployeeId);
    }
    
    [Fact]

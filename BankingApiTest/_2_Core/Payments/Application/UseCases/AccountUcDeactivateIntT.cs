@@ -1,0 +1,59 @@
+using BankingApi._2_Core.BuildingBlocks._1_Ports.Outbound;
+using BankingApi._2_Core.Customers._1_Ports.Outbound;
+using BankingApi._2_Core.Employees._1_Ports.Outbound;
+using BankingApi._2_Core.Payments._1_Ports.Outbound;
+using BankingApi._2_Core.Payments._2_Application.Mappings;
+using BankingApi._2_Core.Payments._2_Application.UseCases;
+using BankingApiTest.TestInfrastructure;
+using Microsoft.Extensions.DependencyInjection;
+namespace BankingApiTest._2_Core.Core.Application.UseCases;
+
+public sealed class AccountUcDeactivateIntT : TestBaseIntegration {
+   
+   public AccountUcDeactivateIntT() {
+      DbMode = DbMode.FileUnique;
+      DbName = "AccountUcDeactivateIntTest";
+      SensitiveDataLogging = true;
+   }
+   
+   [Fact]
+   public async Task Deactivate_Account_ok() {
+      using var scope = Root.CreateDefaultScope();
+      var ct = CancellationToken.None; 
+      var employeeRepository = scope.ServiceProvider.GetRequiredService<IEmployeeRepository>();
+      var accountRepository = scope.ServiceProvider.GetRequiredService<IAccountRepository>();
+      var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+      var seed = scope.ServiceProvider.GetRequiredService<TestSeed>();
+      var sut = scope.ServiceProvider.GetRequiredService<AccountUcDeactivate>();
+      
+      // Arrange
+      // Employee2 is used as Admin and must exists in the dataabse
+      var employee2 = seed.Employee2();
+      employeeRepository.Add(employee2);
+      await unitOfWork.SaveAllChangesAsync("Employee2 must exist", ct);
+      unitOfWork.ClearChangeTracker();
+      
+      var account = seed.Account1();
+      accountRepository.Add(account);
+      await unitOfWork.SaveAllChangesAsync("Add Account1", ct);
+      unitOfWork.ClearChangeTracker();
+
+      // Act
+      var resultAccountDeactivate = await sut.ExecuteAsync(
+         accountId: account.Id,
+         ct: ct
+      );
+      True(resultAccountDeactivate.IsSuccess);
+      unitOfWork.ClearChangeTracker();
+      
+      // Assert
+      var actual = await accountRepository.FindByIdAsync(account.Id, ct);
+      NotNull(actual);
+      Equal(account.Id, actual!.Id);
+      Equal(account.IbanVo, actual.IbanVo);
+      Equal(account.BalanceVo, actual.BalanceVo);
+      Equal(employee2.Id, actual.CreatedByEmployeeId);
+      Equal(employee2.Id, actual.DeactivatedByEmployeeId);
+   }
+   
+}

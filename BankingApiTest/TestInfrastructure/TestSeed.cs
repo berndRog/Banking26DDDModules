@@ -23,6 +23,7 @@ public sealed class TestSeed {
    #region -------------- Test Employees (Entities) ------------------------------------------
    public Employee Employee1() => _seed.Employee1();
    public Employee Employee2() => _seed.Employee2();
+   public Employee EmployeeRegister() => _seed.EmployeeRegister();
    public IReadOnlyList<Employee> Employees => [
       Employee1(), Employee2()
    ];
