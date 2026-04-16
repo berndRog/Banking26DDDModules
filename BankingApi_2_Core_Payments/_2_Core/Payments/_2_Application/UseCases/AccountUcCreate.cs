@@ -48,7 +48,7 @@ public sealed class AccountUcCreate(
          return Result<AccountDto>.Failure(resultBalanceVo.Error);
       var balanceVo = resultBalanceVo.Value;
       
-      // Create entity
+      // Create entity (aggregate root)
       var result = Account.Create(
          ibanVo: ibanVo, 
          balanceVo: balanceVo, 

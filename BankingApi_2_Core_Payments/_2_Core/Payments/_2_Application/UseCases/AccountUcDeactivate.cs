@@ -34,7 +34,7 @@ public sealed class AccountUcDeactivate(
       if (account is null)
          return Result.Failure(AccountErrors.NotFound);
 
-      // 4) Domain mutation
+      // 4) Domain Model
       var deactivatedAt = clock.UtcNow;
       var employeeId = employeeContractDto.Id;
       var result = account.Deactivate(employeeId, deactivatedAt);
