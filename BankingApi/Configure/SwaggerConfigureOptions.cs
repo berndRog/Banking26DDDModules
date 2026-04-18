@@ -2,22 +2,14 @@
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+namespace BankingApi.Configure;
 
-namespace BankingApi;
+public sealed class SwaggerConfigureOptions(
+   IApiVersionDescriptionProvider provider
+) : IConfigureOptions<SwaggerGenOptions> {
 
-public sealed class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions> {
-   private readonly IApiVersionDescriptionProvider _provider;
-
-   public ConfigureSwaggerOptions(
-      IApiVersionDescriptionProvider provider
-   ) {
-      _provider = provider;
-   }
-
-   public void Configure(
-      SwaggerGenOptions options
-   ) {
-      foreach (var description in _provider.ApiVersionDescriptions) {
+   public void Configure(SwaggerGenOptions options) {
+      foreach (var description in provider.ApiVersionDescriptions) {
          options.SwaggerDoc(description.GroupName, new OpenApiInfo {
             Title = "BankingApi",
             Version = description.GroupName,

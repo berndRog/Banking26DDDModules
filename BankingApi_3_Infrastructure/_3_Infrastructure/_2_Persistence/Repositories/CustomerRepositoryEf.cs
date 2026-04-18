@@ -9,23 +9,27 @@ namespace BankingApi._3_Infrastructure._2_Persistence.Repositories;
 internal class CustomerRepositoryEf(
    ICustomerDbContext customerDbContext
 ) : ICustomerRepository {
+   
    public async Task<Customer?> FindByIdAsync(
       Guid customerId,
       CancellationToken ct
    ) => await customerDbContext.Customers
-         .FirstOrDefaultAsync(o => o.Id == customerId, ct);
+      .AsTracking()  // load into repository for EF Tracking
+      .SingleOrDefaultAsync(c => c.Id == customerId, ct);
 
    public async Task<Customer?> FindByIdentitySubjectAsync(
       string subject,
       CancellationToken ct
    ) => await customerDbContext.Customers
-         .FirstOrDefaultAsync(c => c.Subject == subject, ct);
+      .AsTracking()  // load into repository for EF Tracking
+      .SingleOrDefaultAsync(c => c.Subject == subject, ct);
 
    public async Task<Customer?> FindByEmailAsync(
       EmailVo emailVo,
       CancellationToken ct
    ) => await customerDbContext.Customers
-         .SingleOrDefaultAsync(c => c.EmailVo == emailVo, ct);
+      .AsTracking()  // load into repository for EF Tracking
+      .SingleOrDefaultAsync(c => c.EmailVo == emailVo, ct);
 
    public async Task<IReadOnlyList<Customer>> SelectByDisplayNameAsync(
       string displayName,
@@ -33,6 +37,7 @@ internal class CustomerRepositoryEf(
    ) {
       var pattern = $"%{displayName}%";
       return await customerDbContext.Customers
+         .AsTracking()  // load into repository for EF Tracking
          .Where(c =>
             EF.Functions.Like(
                c.CompanyName ?? c.Firstname + " " + c.Lastname,
@@ -51,6 +56,7 @@ internal class CustomerRepositoryEf(
    public async Task<IReadOnlyList<Customer>> SelectAllAsync(
       CancellationToken ct = default
    ) => await customerDbContext.Customers
+         .AsTracking()  // load into repository for EF Tracking
          .ToListAsync(ct);
 
    public void Add(Customer customer)

@@ -1,5 +1,6 @@
 using System.Reflection;
 using Asp.Versioning;
+using BankingApi.Configure;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 namespace BankingApi;
@@ -39,7 +40,7 @@ public static class DiRoot {
       services.AddEndpointsApiExplorer();
 
       // create SwaggerDoc(...) dynamically for all discovered API versions
-      services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+      services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerConfigureOptions>();
 
       services.AddSwaggerGen(options => {
          // include XML docs from all copied XML files in output folder
@@ -49,11 +50,14 @@ public static class DiRoot {
             options.IncludeXmlComments(xmlFile, includeControllerXmlComments: true);
          }
 
-         // optional: nicer schema names in larger modular solutions
-         options.CustomSchemaIds(type => type.FullName?.Replace("+", "."));
+         options.CustomSchemaIds(type => type.Name.Replace("+", "."));
+
+         options.SchemaFilter<SwaggerProblemDetailsSchemaFilter>();
 
          // optional: remove version parameter from generated operation parameters
          options.OperationFilter<SwaggerRemoveVersionParameterFilter>();
+
+         options.OperationFilter<SwaggerNormalizeResponseContentTypesFilter>();
 
          // optional: replace version placeholder in route templates
          options.DocumentFilter<SwaggerReplaceVersionWithExactValueInPathFilter>();

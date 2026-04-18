@@ -45,7 +45,7 @@ public sealed class EmployeesController(
 
       return this.ToCreatedAtRoute(
          routeName: nameof(GetEmployeeById),
-         routeValues: new { id = result.Value.Id },
+         routeValues: new { id = result.IsSuccess ? result.Value.Id : Guid.Empty },
          result,
          logger,
          context,
@@ -208,7 +208,7 @@ public sealed class EmployeesController(
    /// <param name="ct">Cancellation token.</param>
    /// <returns>A collection of all employees.</returns>
    // [Authorize(Policy = "EmployeesOnly")]
-   [HttpGet("employees/name")]
+   [HttpGet("employees/name", Name = nameof(GetEmployeesByNameAsync))]
    [ProducesResponseType<IEnumerable<EmployeeDto>>(StatusCodes.Status200OK)]
    [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized, "application/problem+json")]
    public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetEmployeesByNameAsync(

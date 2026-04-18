@@ -3,18 +3,20 @@ using BankingApi._2_Core.Customers;
 using BankingApi._2_Core.Employees;
 using BankingApi._2_Core.Payments;
 using BankingApi._3_Infrastructure;
+using BankingApi.Configure;
 namespace BankingApi;
 
 public class Program {
    
    public static async Task Main(string[] args) {
       
+      //---- Configure DI Container (IServiceCollection) ----
       var builder = WebApplication.CreateBuilder(args);
       
       // Configure Logging Providers & Http Logging       
       ConfigureLoggingAndHttpLogging.Configure(builder);
   
-      // Access Http-Request in Infrastructure
+      // Access HttpContext in the web identity adapter
       builder.Services.AddHttpContextAccessor();
       
       // Controllers
@@ -28,16 +30,18 @@ public class Program {
 
       // Add Error handling
       builder.Services.AddProblemDetails();
-
+      
       // AuthN (Bearer) + AuthZ
       builder.Services.AddAuthNAuthZ(builder.Configuration);
-
+      
       // API versioning 
       builder.Services.AddApiReaderAndVersioning();
       
       // Swagger
       builder.Services.AddSwagger();
+
       
+      //---- Create App and Setup Middleware pipeline ----
       var app = builder.Build();
 
       

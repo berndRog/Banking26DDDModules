@@ -1,5 +1,5 @@
-using BankingApi._2_Core.BuildingBlocks._4_IntegrationContracts._2_Application.Dtos;
-namespace BankingApi._2_Core.BuildingBlocks._4_IntegrationContracts._1_Ports;
+using BankingApi._2_Core.BuildingBlocks._4_BcContracts._2_Application.Dtos;
+namespace BankingApi._2_Core.BuildingBlocks._4_BcContracts._1_Ports;
 
 // Contract used by other bounded contexts to interact with the Accounts domain.
 // Provides a minimal interface for account-related operations without exposing
@@ -11,7 +11,7 @@ public interface IAccountContract {
       Guid customerId,
       string? accountId,
       string? iban,
-      decimal balance,
+      decimal? balance,
       int currency = 1, // EUR
       CancellationToken ct = default
    );

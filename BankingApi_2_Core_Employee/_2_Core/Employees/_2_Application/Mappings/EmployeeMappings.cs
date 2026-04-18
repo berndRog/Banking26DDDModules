@@ -1,4 +1,4 @@
-using BankingApi._2_Core.BuildingBlocks._4_IntegrationContracts._2_Application.Dtos;
+using BankingApi._2_Core.BuildingBlocks._4_BcContracts._2_Application.Dtos;
 using BankingApi._2_Core.Employees._2_Application.Dtos;
 using BankingApi._2_Core.Employees._3_Domain.Entities;
 namespace BankingApi._2_Core.Employees._2_Application.Mappings;

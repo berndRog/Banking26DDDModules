@@ -109,7 +109,10 @@ public static class ControllerExtensions {
       ArgumentNullException.ThrowIfNull(logger);
       ArgumentException.ThrowIfNullOrWhiteSpace(context);
 
-      logger.LogWarning(
+      var statusCode = ToHttpStatusCode(error.Code);
+
+      logger.Log(
+         ToLogLevel(statusCode),
          "Request failed in {Context}. ErrorCode: {ErrorCode}, Title: {Title}, Message: {Message}, Args: {@Args}",
          context,
          error.Code,
@@ -118,14 +121,15 @@ public static class ControllerExtensions {
          args
       );
 
-      var statusCode = ToHttpStatusCode(error.Code);
-
       var problemDetails = new ProblemDetails {
          Title = error.Title,
          Detail = error.Message,
          Status = statusCode,
          Type = $"https://httpstatuses.com/{statusCode}"
       };
+
+      problemDetails.Extensions["code"] = error.Code.ToString();
+      problemDetails.Extensions["traceId"] = controller.HttpContext.TraceIdentifier;
 
       return statusCode switch {
          StatusCodes.Status400BadRequest =>
@@ -165,5 +169,17 @@ public static class ControllerExtensions {
          ErrorCode.UnprocessableEntity  => StatusCodes.Status422UnprocessableEntity,
          _                              => StatusCodes.Status400BadRequest
       };
-}
 
+   private static LogLevel ToLogLevel(int statusCode) =>
+      statusCode switch {
+         StatusCodes.Status400BadRequest          => LogLevel.Information,
+         StatusCodes.Status401Unauthorized        => LogLevel.Information,
+         StatusCodes.Status403Forbidden           => LogLevel.Information,
+         StatusCodes.Status404NotFound            => LogLevel.Information,
+         StatusCodes.Status409Conflict            => LogLevel.Information,
+         StatusCodes.Status415UnsupportedMediaType => LogLevel.Information,
+         StatusCodes.Status422UnprocessableEntity => LogLevel.Information,
+         _ when statusCode >= 500                 => LogLevel.Error,
+         _                                        => LogLevel.Warning
+      };
+}

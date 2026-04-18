@@ -1,7 +1,6 @@
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-
-namespace BankingApi;
+namespace BankingApi.Configure;
 
 public sealed class SwaggerRemoveVersionParameterFilter : IOperationFilter {
    public void Apply(

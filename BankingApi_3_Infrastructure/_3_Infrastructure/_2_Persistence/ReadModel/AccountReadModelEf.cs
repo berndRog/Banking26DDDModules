@@ -114,26 +114,20 @@ internal sealed class AccountReadModelEf(
       // 1. Query the database using the Aggregate Root (Account) as the entry point.
       // We use a projection (Select) to check for account existence and 
       // retrieve the list of beneficiaries in a single database roundtrip.
-      var result = await dbContext.Accounts
+      var beneficiaryDtos = await dbContext.Accounts
          .AsNoTracking()
-         .Where(a => a.Id == accountId)
-         .Select(a => new {
-            // Project the children directly to DTOs
-            Beneficiaries = a.Beneficiaries.Select(b => b.ToBeneficiaryDto()).ToList()
-         })
+         .Where(a => a.Id == accountId)         // filter
+         .Select(a =>  a.Beneficiaries          // project to an anonymous type with the list of beneficiaries
+            .Select(b => b.ToBeneficiaryDto())  // project to BeneficiaryDto
+            .ToList()
+         )
          .SingleOrDefaultAsync(ct);
 
-      // 2. Case: The AccountId does not exist in the database.
-      // We return a failure because the requested context (the Account) is invalid.
-      if (result == null) {
-         return Result<IEnumerable<BeneficiaryDto>>
-            .Failure(BeneficiaryErrors.InValidAccountId);
-      }
-
-      // 3. Case: The Account exists, but may have zero beneficiaries.
-      // We return Success with an empty list [] because an account with 
-      // no beneficiaries is a valid state, not an error.
-      return Result<IEnumerable<BeneficiaryDto>>.Success(result.Beneficiaries);
+      return beneficiaryDtos is null
+         // 2. Case: The AccountId does not exist in the database.
+         ? Result<IEnumerable<BeneficiaryDto>>.Failure(BeneficiaryErrors.InValidAccountId)
+         // 3. Case: The Account exists, but may have zero beneficiaries.
+         : Result<IEnumerable<BeneficiaryDto>>.Success(beneficiaryDtos);
    }
 
    public async Task<Result<IEnumerable<BeneficiaryDto>>> SelectBeneficiariesByNameAsync(
@@ -146,26 +140,21 @@ internal sealed class AccountReadModelEf(
 
       // 2. Query starting from the Aggregate Root (Account) to ensure context validity.
       // We use a projection to fetch existence and filtered data in one DB trip.
-      var result = await dbContext.Accounts
+      var beneficiaryDtos = await dbContext.Accounts
          .AsNoTracking()
          .Where(a => a.Id == accountId)
-         .Select(a => new {
-            // Filter children directly within the projection
-            FilteredBeneficiaries = a.Beneficiaries
+         .Select(a => a.Beneficiaries
                .Where(b => b.Name.Contains(searchName))
                .Select(b => b.ToBeneficiaryDto())
                .ToList()
-         })
+         )
          .SingleOrDefaultAsync(ct);
 
-      // 3. Case: Account does not exist (Invalid ID provided)
-      if (result == null) {
-         return Result<IEnumerable<BeneficiaryDto>>
-            .Failure(BeneficiaryErrors.InValidAccountId);
-      }
-
-      // 4. Case: Account exists, but search may yield an empty list []
-      return Result<IEnumerable<BeneficiaryDto>>.Success(result.FilteredBeneficiaries);
+      return beneficiaryDtos is null
+         // 3. Case: Account does not exist (Invalid ID provided
+         ? Result<IEnumerable<BeneficiaryDto>>.Failure(BeneficiaryErrors.InValidAccountId)
+         // 4. Case: Account exists, but search may yield an empty list []
+         : Result<IEnumerable<BeneficiaryDto>>.Success(beneficiaryDtos);
    }
    #endregion
    

@@ -25,7 +25,7 @@ public sealed class TransactionsController(
    // [Authorize]
    [HttpGet("accounts/{accountId:guid}/transactions/{id:guid}", Name = nameof(GetTransactionByAccountIdAndByTransactionIdAsync))]
    [Produces("application/json")]
-   [ProducesResponseType<AccountDto>(StatusCodes.Status200OK)]
+   [ProducesResponseType<TransactionDetailDto>(StatusCodes.Status200OK)]
    [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized, "application/problem+json")]
    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
    public async Task<ActionResult<TransactionDetailDto>> GetTransactionByAccountIdAndByTransactionIdAsync(
@@ -51,7 +51,7 @@ public sealed class TransactionsController(
    // [Authorize]
    [HttpGet("accounts/{accountId:guid}/transactions", Name = nameof(SelectTransactionByAccountIdAndTimeperiodAsync))]
    [Produces("application/json")]
-   [ProducesResponseType<AccountDto>(StatusCodes.Status200OK)]
+   [ProducesResponseType<IEnumerable<TransactionDetailDto>>(StatusCodes.Status200OK)]
    [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized, "application/problem+json")]
    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
    public async Task<ActionResult<IEnumerable<TransactionDetailDto>>> SelectTransactionByAccountIdAndTimeperiodAsync(

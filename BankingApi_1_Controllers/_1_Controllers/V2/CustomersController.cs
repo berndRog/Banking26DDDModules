@@ -124,6 +124,7 @@ public sealed class CustomersController(
    /// <returns>The updated customer profile.</returns>
    // [Authorize(Policy = "CustomersOnly")]
    [HttpPut("customers/me/profile", Name = nameof(PutCustomerProfileAsync))]
+   [Consumes("application/json")]
    [Produces("application/json")]
    [ProducesResponseType<CustomerDto>(StatusCodes.Status200OK)]
    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
@@ -192,7 +193,7 @@ public sealed class CustomersController(
    /// <param name="ct">Cancellation token.</param>
    /// <returns>A collection of all customers.</returns>
    // [Authorize(Policy = "EmployeesOnly")]
-   [HttpGet("customers")]
+   [HttpGet("customers", Name = nameof(GetAllCustomersAsync))]
    [ProducesResponseType<IEnumerable<CustomerDto>>(StatusCodes.Status200OK)]
    [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized, "application/problem+json")]
    public async Task<ActionResult<IEnumerable<CustomerDto>>> GetAllCustomersAsync(
@@ -215,7 +216,7 @@ public sealed class CustomersController(
    /// <param name="ct">Cancellation token.</param>
    /// <returns>A collection of all customers.</returns>
    // [Authorize(Policy = "EmployeesOnly")]
-   [HttpGet("customers/name")]
+   [HttpGet("customers/name", Name = nameof(GetCustomersByDisplayNameAsync))]
    [ProducesResponseType<IEnumerable<CustomerDto>>(StatusCodes.Status200OK)]
    [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized, "application/problem+json")]
    public async Task<ActionResult<IEnumerable<CustomerDto>>> GetCustomersByDisplayNameAsync(

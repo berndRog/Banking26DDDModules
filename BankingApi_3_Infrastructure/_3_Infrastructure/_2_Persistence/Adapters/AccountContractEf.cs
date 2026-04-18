@@ -2,8 +2,8 @@ using System.Runtime.CompilerServices;
 using BankingApi._2_Core.BuildingBlocks;
 using BankingApi._2_Core.BuildingBlocks._1_Ports.Outbound;
 using BankingApi._2_Core.BuildingBlocks._3_Domain.Enums;
-using BankingApi._2_Core.BuildingBlocks._4_IntegrationContracts._1_Ports;
-using BankingApi._2_Core.BuildingBlocks._4_IntegrationContracts._2_Application.Dtos;
+using BankingApi._2_Core.BuildingBlocks._4_BcContracts._1_Ports;
+using BankingApi._2_Core.BuildingBlocks._4_BcContracts._2_Application.Dtos;
 using BankingApi._2_Core.Payments._1_Ports.Outbound;
 using BankingApi._2_Core.Payments._2_Application.Dtos;
 using BankingApi._2_Core.Payments._2_Application.Mappings;
@@ -28,7 +28,7 @@ internal class AccountContractEf(
       Guid customerId, 
       string? accoutIdString = null,
       string? iban = null,
-      decimal balance = 0m,
+      decimal? balance = null,
       int currency = 1, // EUR
       CancellationToken ct = default!
    ) {
@@ -61,7 +61,8 @@ internal class AccountContractEf(
       var ibanVo = resultIban.Value;
       
       // 3) Create BalanceVo
-      var resultBalance = MoneyVo.Create(balance, Currency.EUR);
+      if(balance == null) balance = 0m;
+      var resultBalance = MoneyVo.Create((decimal) balance, (Currency) currency);
       if (resultBalance.IsFailure)
          throw new Exception($"Invalid money in test seed: {resultBalance}");
       var balanceVo = resultBalance.Value;

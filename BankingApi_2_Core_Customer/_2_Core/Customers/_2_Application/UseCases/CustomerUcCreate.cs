@@ -3,7 +3,7 @@ using BankingApi._2_Core.BuildingBlocks;
 using BankingApi._2_Core.BuildingBlocks._1_Ports.Outbound;
 using BankingApi._2_Core.BuildingBlocks._2_Application.Mappings;
 using BankingApi._2_Core.BuildingBlocks._3_Domain.ValueObjects;
-using BankingApi._2_Core.BuildingBlocks._4_IntegrationContracts._1_Ports;
+using BankingApi._2_Core.BuildingBlocks._4_BcContracts._1_Ports;
 using BankingApi._2_Core.Customers._1_Ports.Outbound;
 using BankingApi._2_Core.Customers._2_Application.Dtos;
 using BankingApi._2_Core.Customers._2_Application.Mappings;
@@ -24,17 +24,18 @@ internal sealed class CustomerUcCreate(
       CustomerCreateDto customerCreateDto,
       CancellationToken ct = default
    ) {
+      // 1) Check email uniqueness
       // create email value object (domain logic inside)
       var resultDtoEmail = EmailVo.Create(customerCreateDto.Email);
       if (resultDtoEmail.IsFailure)
          return Result<CustomerDto>.Failure(resultDtoEmail.Error);
       var emailDtoVo = resultDtoEmail.Value;
-      
       // check email uniqueness
       if (await repository.FindByEmailAsync(emailDtoVo, ct) != null) {
          return Result<CustomerDto>.Failure(CustomerErrors.EmailAlreadyInUse);
       }
       
+      // 2) Domain model
       // create aggregate (domain logic inside)
       var result = Customer.Create(
          firstname: customerCreateDto.Firstname, 
@@ -46,14 +47,13 @@ internal sealed class CustomerUcCreate(
          id: customerCreateDto.Id.ToString(),
          addressVo: customerCreateDto.AddressDto.ToAddressVo()
       );
-      
       if (result.IsFailure) 
          return Result<CustomerDto>.Failure(result.Error)
             .LogIfFailure(logger, "CustomerUcCreate.DomainRejected",
                new { customerDto = customerCreateDto });
       var customer = result.Value!;
       
-      // Check if there are accounts for this customer,
+      // 3) Check if there are already accounts for this customer,
       // if so, fail (this is a severe error)
       var resultHasAccounts = await accountContract.HasNoAccountsAsync(customer.Id, ct);
       if (resultHasAccounts.IsFailure)
@@ -62,20 +62,19 @@ internal sealed class CustomerUcCreate(
       if (!hasNoAccounts)
          return Result<CustomerDto>.Failure(CustomerErrors.AlreadyHasAccounts);
 
-      // Add customer to repository (tracked by EF)
+      // 4) Add customer to repository (tracked by EF)
       repository.Add(customer);
      
-      // Save all changes to database using a transaction
+      // 5) Unit of work, save changes to database
       var rows = await unitOfWork.SaveAllChangesAsync("Create Customer", ct);
       logger.LogInformation("CustomerUcCreate={id} rows={rows}", customer.Id, rows);
       
-      // Create initial account for owner (domain logic in accounts module)
+      // 6) Create initial account for owner (domain logic in accounts module)
       var resultAccount = await accountContract.OpenInitialAccountAsync(
          customerId: customer.Id,
          accountId: customerCreateDto.AccountId,
          iban: customerCreateDto.Iban,
-         balance: customerCreateDto.Balance ?? 0.0m,
-         
+         balance: customerCreateDto.Balance,
          ct: ct
       );
       if(resultAccount.IsFailure)

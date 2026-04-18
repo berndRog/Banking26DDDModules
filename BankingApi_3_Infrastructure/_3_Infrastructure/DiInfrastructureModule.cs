@@ -1,5 +1,5 @@
 using BankingApi._2_Core.BuildingBlocks._1_Ports.Outbound;
-using BankingApi._2_Core.BuildingBlocks._4_IntegrationContracts._1_Ports;
+using BankingApi._2_Core.BuildingBlocks._4_BcContracts._1_Ports;
 using BankingApi._2_Core.Customers._1_Ports.Outbound;
 using BankingApi._2_Core.Employees._1_Ports.Outbound;
 using BankingApi._2_Core.Payments._1_Ports.Outbound;
@@ -55,7 +55,7 @@ public static class DiInfrastructureModule {
       services.AddScoped<IUnitOfWork, UnitOfWork>();
 
       // IdentityGateway
-      //services.AddScoped<IIdentityGateway, IdentityGatewayHttpContext>();
+      // The HttpContext-based adapter is registered in the ASP.NET host when real auth is used.
       services.AddScoped<IIdentityGateway>(_ => new FakeIdentityGateway(
          subject: "11111111-0002-0000-0000-000000000000",
          username: "w.wagner@banking.de",

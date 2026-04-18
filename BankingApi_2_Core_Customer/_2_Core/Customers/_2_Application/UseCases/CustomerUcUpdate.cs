@@ -19,13 +19,14 @@ public sealed class CustomerUcUpdate(
       CustomerDto customerDto,
       CancellationToken ct = default
    ) {
-      // Find existing customer
+      // 1) Load customer from database
       var customer = await repository.FindByIdAsync(customerDto.Id, ct);
       if (customer is null) {
          logger.LogWarning("UpdateEmail email failed: owner not found ({Id})", customerDto.Id.To8());
          return Result.Failure(CustomerErrors.NotFound);
       }
       
+      // 2) Domain Model
       // Update existing customer 
       var resultUpdate = customer.Update(
          lastname: customer.Lastname,
@@ -34,11 +35,10 @@ public sealed class CustomerUcUpdate(
          addressVo: customer.AddressVo,
          updatedAt: clock.UtcNow
       );
-      
       if (resultUpdate.IsFailure) 
          return Result.Failure(resultUpdate.Error);
 
-      // Save changes in database
+      // 3) Save changes in database
       var savedRows = await unitOfWork.SaveAllChangesAsync("Email changes",ct);
       logger.LogDebug("Customer updated ({Id}, saved row {rows})", customerDto.Id.To8(), savedRows);
       

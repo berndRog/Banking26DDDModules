@@ -1,4 +1,4 @@
-namespace BankingApi._2_Core.BuildingBlocks._4_IntegrationContracts._1_Ports;
+namespace BankingApi._2_Core.BuildingBlocks._4_BcContracts._1_Ports;
 
 // Contract used by other bounded contexts to interact with the Customer domain.
 // Provides a minimal interface for customer-related operations without exposing

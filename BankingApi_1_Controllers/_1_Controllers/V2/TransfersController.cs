@@ -35,6 +35,7 @@ public sealed class TransfersController(
    [Produces("application/json")]
    [ProducesResponseType<TransferDto>(StatusCodes.Status201Created)]
    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+   [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized, "application/problem+json")]
    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
    public async Task<ActionResult<TransferDto>> SendMoneyAsync(
       [FromRoute] Guid accountId,
@@ -52,7 +53,7 @@ public sealed class TransfersController(
          routeName: nameof(GetTransferByAccountIdAndTransferIdAsync),
          routeValues: new {
             accountId = accountId,
-            id = result.Value.Id
+            id = result.IsSuccess ? result.Value.Id : Guid.Empty
          },
          result,
          logger,
@@ -75,6 +76,7 @@ public sealed class TransfersController(
    // [Authorize(Policy = "CustomersOrEmployees")]
    [HttpGet("accounts/{accountId:guid}/transfers", Name = nameof(GetTransfersByAccountIdAsync))]
    [ProducesResponseType<IReadOnlyList<TransferDto>>(StatusCodes.Status200OK)]
+   [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized, "application/problem+json")]
    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
    public async Task<ActionResult<IReadOnlyList<TransferDto>>> GetTransfersByAccountIdAsync(
       [FromRoute] Guid accountId,
@@ -101,6 +103,7 @@ public sealed class TransfersController(
    //[Authorize(Policy = "CustomersOrEmployees")]
    [HttpGet("accounts/{accountId:guid}/transfers/{id:guid}", Name = nameof(GetTransferByAccountIdAndTransferIdAsync))]
    [ProducesResponseType<TransferDto>(StatusCodes.Status200OK)]
+   [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized, "application/problem+json")]
    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
    public async Task<ActionResult<TransferDto>> GetTransferByAccountIdAndTransferIdAsync(
       [FromRoute] Guid accountId,
