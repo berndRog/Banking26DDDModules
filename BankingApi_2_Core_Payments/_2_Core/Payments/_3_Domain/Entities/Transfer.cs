@@ -97,7 +97,7 @@ public sealed class Transfer : AggregateRoot {
          creditTransactionId: creditTransactionId,
          bookedAt: bookedAt
       );
-
+      
       
       
       return Result<Transfer>.Success(transfer);
@@ -146,6 +146,11 @@ public sealed class Transfer : AggregateRoot {
       return Result<Transfer>.Success(transfer);
    }
 
+   public void SetStatusBooked() {
+      Status = TransferStatus.Booked;
+   }
+
+   
    public Result MarkAsReversed(Guid reversalTransferId, DateTimeOffset reversedAt) {
       // if (reversalTransferId == Guid.Empty)
       //    return Result.Failure(TransferErrors.InvalidReversalTransferId);

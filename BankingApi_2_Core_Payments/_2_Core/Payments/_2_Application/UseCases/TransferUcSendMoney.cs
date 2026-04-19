@@ -119,19 +119,21 @@ public sealed class TransferUcSendMoney(
       debitTransaction.AttachTransfer(transfer.Id);
       creditTransaction.AttachTransfer(transfer.Id);
 
-      // // Register the transfer on the sender account aggregate.
-      // debitAccount.AddTransfer(
+      // Register the transfer on the sender account aggregate.
+      //debitAccount.AddTransfer(
       //    transfer: transfer,
       //    updatedAt: bookedAt
-      // );
+      //);
 
       // 4) Persist changes ----------------------------------------------------
       // Add the transfer to the repository so it becomes part of persistence.
       transferRepository.Add(transfer);
 
+      transfer.SetStatusBooked();
+      
       // Persist all accumulated changes in a single unit of work.
-      await unitOfWork.SaveAllChangesAsync("Send money", ct);
-
+      var rows = await unitOfWork.SaveAllChangesAsync("Send money", ct);
+      
       // 5) Log and return result ----------------------------------------------
       // Write a log entry for diagnostics and traceability.
       logger.LogInformation(
@@ -141,7 +143,7 @@ public sealed class TransferUcSendMoney(
          creditAccount.Id.To8(),
          amount
       );
-
+      
       // Return the mapped DTO to the caller.
       return Result<TransferDto>.Success(transfer.ToTransferDto());
    }
