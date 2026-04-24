@@ -1,8 +1,10 @@
 ﻿using Asp.Versioning;
 using BankingApi._1_Controllers.Extensions;
+using BankingApi._2_Core.BuildingBlocks;
 using BankingApi._2_Core.Payments._1_Ports.Inbound;
 using BankingApi._2_Core.Payments._1_Ports.Outbound;
 using BankingApi._2_Core.Payments._2_Application.Dtos;
+using BankingApi._2_Core.Payments._3_Domain.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -37,6 +39,7 @@ public sealed class TransfersController(
    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
    [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized, "application/problem+json")]
    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
+   [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict, "application/problem+json")]
    public async Task<ActionResult<TransferDto>> SendMoneyAsync(
       [FromRoute] Guid accountId,
       [FromBody] SendMoneyDto sendMoneyDto,
@@ -44,6 +47,15 @@ public sealed class TransfersController(
    ) {
       const string context = $"{nameof(TransfersController)}.{nameof(SendMoneyAsync)}";
 
+      if (sendMoneyDto.DebitAccountId != accountId) {
+         return this.ToActionResult(
+            Result<TransferDto>.Failure(TransferErrors.FromAccountIdMismatch),
+            logger,
+            context,
+            args: new { accountId, sendMoneyDto.DebitAccountId }
+         );
+      }
+      
       var result = await transferUseCases.SendMoneyAsync(
          sendMoneyDto: sendMoneyDto,
          ct: ct

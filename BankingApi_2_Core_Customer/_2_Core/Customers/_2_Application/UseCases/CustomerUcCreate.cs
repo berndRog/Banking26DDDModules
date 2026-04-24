@@ -2,8 +2,10 @@ using System.Runtime.CompilerServices;
 using BankingApi._2_Core.BuildingBlocks;
 using BankingApi._2_Core.BuildingBlocks._1_Ports.Outbound;
 using BankingApi._2_Core.BuildingBlocks._2_Application.Mappings;
+using BankingApi._2_Core.BuildingBlocks._3_Domain.Enums;
 using BankingApi._2_Core.BuildingBlocks._3_Domain.ValueObjects;
 using BankingApi._2_Core.BuildingBlocks._4_BcContracts._1_Ports;
+using BankingApi._2_Core.BuildingBlocks._4_BcContracts._2_Application.Dtos;
 using BankingApi._2_Core.Customers._1_Ports.Outbound;
 using BankingApi._2_Core.Customers._2_Application.Dtos;
 using BankingApi._2_Core.Customers._2_Application.Mappings;
@@ -14,6 +16,7 @@ using Microsoft.Extensions.Logging;
 namespace BankingApi._2_Core.Customers._2_Application.UseCases;
 
 internal sealed class CustomerUcCreate(
+   IEmployeeContract employeeContract,
    ICustomerRepository repository,
    IAccountContract accountContract,
    IUnitOfWork unitOfWork,
@@ -24,6 +27,14 @@ internal sealed class CustomerUcCreate(
       CustomerCreateDto customerCreateDto,
       CancellationToken ct = default
    ) {
+      
+      // // 1) Load authorized employee and check if has rights to manage accounts
+      // var resultEmployee = 
+      //    await employeeContract.GetAuthorizedEmployeeAsync(AdminRights.ManageAccounts, ct);   
+      // if(resultEmployee.IsFailure)
+      //    return Result<AccountContractDto>.Failure(resultEmployee.Error);
+      // var employeeContractDto = resultEmployee.Value;
+      //
       // 1) Check email uniqueness
       // create email value object (domain logic inside)
       var resultDtoEmail = EmailVo.Create(customerCreateDto.Email);

@@ -1,0 +1,37 @@
+
+###
+# @name Get transfer1 by accountId and transferId
+GET {{baseUrl}}/accounts/01000000-0000-0000-0000-000000000000/transfers/00010000-0000-0000-0000-000000000000
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+# @name Get transfersByAccountId1
+GET {{baseUrl}}/accounts/01000000-0000-0000-0000-000000000000/transfers
+Authorization: Bearer {{accessToken}}
+
+###
+# @name Get transfersByAccountId2
+GET {{baseUrl}}/accounts/02000000-0000-0000-0000-000000000000/transfers
+Authorization: Bearer {{accessToken}}
+
+###
+# @name Get transfersByAccountId3
+GET {{baseUrl}}/accounts/03000000-0000-0000-0000-000000000000/transfers
+Authorization: Bearer {{accessToken}}
+
+###
+# @name Get transfersByAccountId4
+GET {{baseUrl}}/accounts/04000000-0000-0000-0000-000000000000/transfers
+Authorization: Bearer {{accessToken}}
+
+###
+# @name Get transfersByAccountId5
+GET {{baseUrl}}/accounts/05000000-0000-0000-0000-000000000000/transfers
+Authorization: Bearer {{accessToken}}
+
+###
+# @name Get transfersByAccountId6
+GET {{baseUrl}}/accounts/06000000-0000-0000-0000-000000000000/transfers
+Authorization: Bearer {{accessToken}}
+

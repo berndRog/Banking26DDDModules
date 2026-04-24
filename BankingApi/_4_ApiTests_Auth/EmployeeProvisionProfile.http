@@ -1,26 +1,28 @@
 
 ###
 # @name Post employee1
-POST {{baseUrl}}/employees
+POST {{authServer}}/dev/token
 Content-Type: application/json
 Accept: application/json
 
 {
-  "id": "00000000-0001-0000-0000-000000000000",
-  "firstname": "Veronika",
-  "lastname": "Vogel",
-  "email": "v.vogel@banking.de",
-  "phone": "+49 5826 123 4010",
-  "subject": "11111111-0001-0000-0000-000000000000",
-  "adminrights": 255,
-  "personnelnumber": "Emp001"
+  "Email": "admin@mail.local",
+  "Password":"Geh1m_",
+  "Api": "BankingApi"
 }
+
+> {%
+const body = response.body;
+client.global.set("accessToken", body.access_token || body.token || body.accessToken);
+%}
+
 
 ###
 # @name Post employee2
 POST {{baseUrl}}/employees
 Content-Type: application/json
 Accept: application/json
+Authorization: Bearer {{accessToken}}
 
 {
   "id": "00000000-0002-0000-0000-000000000000",
@@ -38,6 +40,7 @@ Accept: application/json
 POST {{baseUrl}}/employees
 Content-Type: application/json
 Accept: application/json
+Authorization: Bearer {{accessToken}}
 
 {
   "id": "00000000-0099-0000-0000-000000000000",

@@ -3,6 +3,7 @@ using BankingApi._2_Core.BuildingBlocks._3_Domain.Enums;
 using BankingApi._2_Core.BuildingBlocks._3_Domain.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 namespace BankingApi._1_Controllers.Extensions;
 
@@ -74,10 +75,13 @@ public static class ControllerExtensions {
       if (result.IsFailure)
          return controller.ToProblemActionResult(result.Error, logger, context, args);
 
+      var routeValueDictionary = new RouteValueDictionary(routeValues);
+      AddCurrentApiVersion(controller, routeValueDictionary);
+
       try {
          return controller.CreatedAtRoute(
             routeName: routeName,
-            routeValues: routeValues,
+            routeValues: routeValueDictionary,
             value: result.Value
          );
       }
@@ -87,12 +91,30 @@ public static class ControllerExtensions {
             "CreatedAtRoute failed in {Context}. RouteName: {RouteName}, RouteValues: {@RouteValues}",
             context,
             routeName,
-            routeValues
+            routeValueDictionary
          );
 
          // Fallback: resource was created, but route generation failed
          return controller.StatusCode(StatusCodes.Status201Created, result.Value);
       }
+   }
+
+   private static void AddCurrentApiVersion(
+      ControllerBase controller,
+      RouteValueDictionary routeValues
+   ) {
+      if (routeValues.ContainsKey("version"))
+         return;
+
+      var routeVersion = controller.RouteData.Values["version"]?.ToString();
+      if (!string.IsNullOrWhiteSpace(routeVersion)) {
+         routeValues["version"] = routeVersion;
+         return;
+      }
+
+      var requestedVersion = controller.HttpContext.GetRequestedApiVersion();
+      if (requestedVersion is not null)
+         routeValues["version"] = requestedVersion.ToString();
    }
 
    // Centralized mapping of DomainError -> HTTP ProblemDetails response

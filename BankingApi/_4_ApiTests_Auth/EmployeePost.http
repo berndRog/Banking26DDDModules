@@ -4,6 +4,7 @@
 POST {{baseUrl}}/employees
 Content-Type: application/json
 Accept: application/json
+Authorization: Bearer {{accessToken}}
 
 {
   "id": "00000000-0001-0000-0000-000000000000",
@@ -21,6 +22,7 @@ Accept: application/json
 POST {{baseUrl}}/employees
 Content-Type: application/json
 Accept: application/json
+Authorization: Bearer {{accessToken}}
 
 {
   "id": "00000000-0002-0000-0000-000000000000",
@@ -38,6 +40,7 @@ Accept: application/json
 POST {{baseUrl}}/employees
 Content-Type: application/json
 Accept: application/json
+Authorization: Bearer {{accessToken}}
 
 {
   "id": "00000000-0099-0000-0000-000000000000",

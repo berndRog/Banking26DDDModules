@@ -137,7 +137,7 @@ public sealed class Employee : AggregateRoot {
       string? id = null
    ) {
       
-      var phoneVo = PhoneVo.Create("0111 2222 3333").Value;
+      var phoneVo = PhoneVo.Create("1111 2222 3333").Value;
       
       var resultSubject = SubjectCheck.Run(subject);
       if (resultSubject.IsFailure)
@@ -206,6 +206,7 @@ public sealed class Employee : AggregateRoot {
       EmailVo = emailVo;
       PhoneVo = phoneVo;
       PersonnelNumber = personnelNumber;
+      IsActive = true;
       
       Touch(updatedAt);
       return Result.Success();

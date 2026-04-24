@@ -98,7 +98,7 @@ public sealed class AccountsController(
    /// <param name="ct">Cancellation token.</param>
    /// <returns>The created account resource.</returns>
    // [Authorize(Policy = "EmployeesOnly")]
-   [HttpPost("customers/{customerId}/accounts", Name = nameof(CreateAccountAsync))]
+   [HttpPost("customers/{customerId:guid}/accounts", Name = nameof(CreateAccountAsync))]
    [Consumes("application/json")]
    [Produces("application/json")]
    [ProducesResponseType<AccountDto>(StatusCodes.Status201Created)]
