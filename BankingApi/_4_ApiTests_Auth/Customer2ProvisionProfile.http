@@ -1,0 +1,192 @@
+###
+@baseUrl = https://localhost:8010/banking/v2
+@authServer = https://localhost:7010
+@devClientId = dev-token-client
+
+@email = max.mustermann@gmail.de
+@password = Geh1m_
+@accountType = customer
+
+@apiScope = banking_api
+
+@id = 20000000-0000-0000-0000-000000000000
+@firstname = Max
+@lastname = Mustermann
+@companyName = null
+
+
+### 
+# @name 1) Create Customer on IA-Provider (Dev-only)
+POST {{authServer}}/dev/users
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}",
+  "confirmPassword": "{{password}}",
+  "accountType": "{{accountType}}",
+  "adminRights": 0,
+  "mustChangePassword": false
+}
+
+> {%
+    client.test("IA-Server: Employee created", function() {
+        client.assert(response.status === 201, "Expected HTTP 201");
+    });
+%}
+
+### 
+# @name 2) Get a bearer token scope=openid profile offline_access {{apiScope}}
+POST {{authServer}}/connect/token
+Content-Type: application/x-www-form-urlencoded
+Accept: application/json
+
+grant_type=dev_password
+    &client_id={{devClientId}}
+    &email={{email}}
+    &password={{password}}
+    &scope={{apiScope}}
+
+> {%
+    client.test("Employee token created", function() {
+        client.assert(response.status === 200, "Expected HTTP 200");
+        client.assert(!!response.body.access_token, "Missing access_token");
+    });
+
+    client.global.set("accessToken", response.body.access_token);
+%}
+
+###
+# @name 3) Post customer provision
+POST {{baseUrl}}/customers/me/provision?id={{id}}
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+# @name 4) Put customer profile
+PUT {{baseUrl}}/customers/me/profile
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "id": "{{id}}",
+  "firstname": "{{firstname}}",
+  "lastname": "{{lastname}}",
+  "companyName": null,
+  "email": "{{email}}",
+  "subject": "xxxx",
+  "statusInt": 1,
+  "addressDto": {
+    "street": "Hauptstr. 23",
+    "postalCode": "29556",
+    "city": "Suderburg",
+    "country": "DE"
+  }
+}
+
+
+
+
+###
+# @name Post customer3
+POST {{baseUrl}}/customers
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "id": "30000000-0000-0000-0000-000000000000",
+  "firstname": "Arne",
+  "lastname": "Arndt",
+  "email": "a.arndt@t.online.de",
+  "subject": "c0004e61-ba7a-4d2a-977f-766b42bb79a9",
+  "statusInt": 1,
+  "addressDto": {
+    "street": "Neuperverstr. 29",
+    "postalCode": "29410",
+    "city": "Salzwedel",
+    "country": "DE"
+  },
+  "accountid": "04000000-0000-0000-0000-000000000000",
+  "iban": "DE30 1000 0000 0000 0000 70",
+  "balance": 3000.0
+}
+
+###
+# @name Post customer4
+POST {{baseUrl}}/customers
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "id": "40000000-0000-0000-0000-000000000000",
+  "firstname": "Benno",
+  "lastname": "Bauer",
+  "email": "b.bauer@gmail.com",
+  "subject": "d0024ab-43c5-4c64-872d-6ca05f66756b",
+  "statusInt": 1,
+  "addressDto": {
+    "street": "Neuperverstr. 29",
+    "postalCode": "29410",
+    "city": "Salzwedel",
+    "country": "DE"
+  },
+  "accountid": "05000000-0000-0000-0000-000000000000",
+  "iban": "DE40 1000 0000 0000 0000 84",
+  "balance": 1900.0
+}
+
+###
+# @name Post customer5
+POST {{baseUrl}}/customers
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "id": "50000000-0000-0000-0000-000000000000",
+  "firstname": "Christine",
+  "lastname": "Conrad",
+  "companyname": "CC Consulting GmbH",
+  "email": "c.conrad@gmx.de",
+  "subject": "e00050fb-a381-4e3f-a44b-81ffa7610b72",
+  "statusInt": 1,
+  "addressDto": {
+    "street": "Berliner Platz 8",
+    "postalCode": "29614",
+    "city": "Soltau",
+    "country": "DE"
+  },
+  "accountid": "06000000-0000-0000-0000-000000000000",
+  "iban": "DE50 1000 0000 0000 0000 01",
+  "balance": 3500.0
+}
+
+###
+# @name Post customer6
+POST {{baseUrl}}/customers
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "id": "60000000-0000-0000-0000-000000000000",
+  "firstname": "Dana",
+  "lastname": "Deppe",
+  "email": "d.deppe@icloud.com",
+  "subject": "f0004f67-72a3-4449-af1f-803dcfaddb7f",
+  "statusInt": 1,
+  "addressDto": {
+    "street": "Allertalweg 2",
+    "postalCode": "29227",
+    "city": "Celle",
+    "country": "DE"
+  },
+  "accountid": "08000000-0000-0000-0000-000000000000",
+  "iban": "DE60 1000 0000 0000 0000 15",
+  "balance": 4300.0
+}

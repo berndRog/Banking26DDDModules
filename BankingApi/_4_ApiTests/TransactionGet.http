@@ -1,0 +1,42 @@
+
+###
+# @name Get transaction1d by accountId and transferId
+GET {{baseUrl}}/accounts/01000000-0000-0000-0000-000000000000/transactions/0001d000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+###
+# @name Get transaction1c by accountId and transferId
+GET {{baseUrl}}/accounts/06000000-0000-0000-0000-000000000000/transactions/0001c000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+###
+# @name Get transactions by accountId and timeperiod
+GET {{baseUrl}}/accounts/01000000-0000-0000-0000-000000000000/transactions?fromUtc=2025-01-01T00:00:00.000Z&toUtc=2025-02-01T00:00Z
+Content-Type: application/json
+
+###
+# @name Get transactions by accountId and timeperiod
+GET {{baseUrl}}/accounts/02000000-0000-0000-0000-000000000000/transactions?fromUtc=2025-01-01T00:00:00.000Z&toUtc=2025-07-01T00:00Z
+Content-Type: application/json
+
+###
+# @name Get transactions by accountId and timeperiod
+GET {{baseUrl}}/accounts/03000000-0000-0000-0000-000000000000/transactions?fromUtc=2025-01-01T00:00:00.000Z&toUtc=2025-07-01T00:00Z
+Content-Type: application/json
+
+###
+# @name Get transactions by accountId and timeperiod
+GET {{baseUrl}}/accounts/03000000-0000-0000-0000-000000000000/transactions?fromUtc=2025-01-01T00:00:00.000Z&toUtc=2025-07-01T00:00Z
+Content-Type: application/json
+
+###
+# @name Get transactions by accountId and timeperiod
+GET {{baseUrl}}/accounts/03000000-0000-0000-0000-000000000000/transactions?fromUtc=2025-01-01T00:00:00.000Z&toUtc=2025-07-01T00:00Z
+Content-Type: application/json
+
+
+###
+# @name Get transactions by accountId and timeperiod
+GET {{baseUrl}}/accounts/06000000-0000-0000-0000-000000000000/transactions?fromUtc=2025-01-01T00:00:00.000Z&toUtc=2025-07-01T00:00Z
+Content-Type: application/json
+
